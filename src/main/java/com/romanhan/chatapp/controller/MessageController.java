@@ -2,12 +2,12 @@ package com.romanhan.chatapp.controller;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.romanhan.chatapp.model.Message;
 import com.romanhan.chatapp.service.MessageService;
 
-@Controller
+@RestController
 public class MessageController {
 
     private final MessageService messageService;

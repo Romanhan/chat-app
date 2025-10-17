@@ -2,10 +2,12 @@ package com.romanhan.chatapp.model;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,5 +24,11 @@ public class Message {
     private long id;
     private String sender;
     private String text;
-    private LocalDateTime timestamp = LocalDateTime.now();
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime timestamp;
+
+    @PrePersist
+    protected void onCreate() {
+        this.timestamp = LocalDateTime.now();
+    }
 }
