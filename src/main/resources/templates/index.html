@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App - Login</title>
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <h1>Chat App</h1>
+            <p class="subtitle">Real-time messaging with friends</p>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your username" required
+                        minlength="1" maxlength="20">
+                    <span class="error" id="usernameError"></span>
+                </div>
+
+                <button type="submit" class="btn-login">Enter Chat</button>
+            </form>
+
+            <div class="info">
+                <p>💡 Just enter any username - no password needed for now!</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/login.js"></script>
+</body>
+
+</html>

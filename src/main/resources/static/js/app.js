@@ -1,66 +1,71 @@
 // ============================================
-// CHAT APP - WebSocket Client with AutoConnect
+// CHAT APP - WebSocket Client with Session Management
 // ============================================
 
 let stompClient = null;
 let username = "";
 let isConnected = false;
 
-const usernameInput = document.getElementById('username');
 const messageInput = document.getElementById('message');
 const sendButton = document.getElementById('send');
 const messagesDiv = document.getElementById('messages');
+const disconnectBtn = document.getElementById('disconnectBtn');
+const currentUserSpan = document.querySelector('#currentUser strong');
 
 // ============================================
-// AUTO-CONNECT: Connect when sending first message
+// INITIALIZE ON PAGE LOAD
 // ============================================
 
-async function ensureConnected() {
-    if (isConnected) {
-        return; // Already connected
-    }
+document.addEventListener('DOMContentLoaded', function () {
+    // Check if user is logged in
+    const storedUsername = sessionStorage.getItem('currentUsername');
 
-    if (!usernameInput.value.trim()) {
-        alert('Please enter your name first!');
-        messageInput.focus();
+    if (!storedUsername) {
+        // User not logged in - redirect to login page
+        console.log('No username found in session. Redirecting to login...');
+        window.location.href = '/';
         return;
     }
 
-    username = usernameInput.value.trim();
-    usernameInput.disabled = true;
+    username = storedUsername;
+    currentUserSpan.textContent = username;
 
+    console.log('✅ User session found:', username);
+
+    // Auto-connect to chat
+    connect();
+});
+
+// ============================================
+// CONNECT TO WEBSOCKET
+// ============================================
+
+function connect() {
     const socket = new SockJS('/chat');
     stompClient = Stomp.over(socket);
 
     // Disable debug output for cleaner console
     stompClient.debug = null;
 
-    return new Promise((resolve, reject) => {
-        try {
-            stompClient.connect({}, function (frame) {
-                console.log('✅ Connected to chat server');
-                isConnected = true;
+    stompClient.connect({}, function (frame) {
+        console.log('✅ Connected to chat server');
+        isConnected = true;
 
-                // Subscribe to receive messages
-                stompClient.subscribe('/topic/messages', onMessageReceived);
+        // Enable message input
+        messageInput.disabled = false;
+        sendButton.disabled = false;
 
-                // Load message history from database
-                loadMessageHistory();
+        // Subscribe to receive messages
+        stompClient.subscribe('/topic/messages', onMessageReceived);
 
-                resolve();
-            }, function (error) {
-                isConnected = false;
-                usernameInput.disabled = false;
-                console.error('❌ Connection failed:', error);
-                alert('Failed to connect. Make sure the server is running on localhost:8080');
-                reject(error);
-            });
-        } catch (error) {
-            isConnected = false;
-            usernameInput.disabled = false;
-            console.error('❌ Connection error:', error);
-            reject(error);
-        }
+        // Load message history from database
+        loadMessageHistory();
+    }, function (error) {
+        console.error('❌ Connection failed:', error);
+        isConnected = false;
+        messageInput.disabled = true;
+        sendButton.disabled = true;
+        showError('Failed to connect to chat server. Make sure the backend is running.');
     });
 }
 
@@ -68,17 +73,19 @@ async function ensureConnected() {
 // SEND MESSAGE
 // ============================================
 
-async function sendMessage() {
+function sendMessage() {
     const messageText = messageInput.value.trim();
 
     if (!messageText) {
         return;
     }
 
-    try {
-        // Connect if not already connected
-        await ensureConnected();
+    if (!isConnected) {
+        showError('Not connected to chat. Please refresh the page.');
+        return;
+    }
 
+    try {
         const message = {
             sender: username,
             text: messageText
@@ -92,6 +99,7 @@ async function sendMessage() {
         messageInput.focus();
     } catch (error) {
         console.error('Error sending message:', error);
+        showError('Failed to send message. Please try again.');
     }
 }
 
@@ -125,9 +133,18 @@ function displayMessage(message) {
     const textSpan = document.createElement('span');
     textSpan.textContent = message.text;
 
+    const timeSpan = document.createElement('small');
+    timeSpan.classList.add('message-time');
+    if (message.timestamp) {
+        const date = new Date(message.timestamp);
+        timeSpan.textContent = date.toLocaleTimeString();
+    }
+
     messageElement.appendChild(senderSpan);
     messageElement.appendChild(document.createElement('br'));
     messageElement.appendChild(textSpan);
+    messageElement.appendChild(document.createElement('br'));
+    messageElement.appendChild(timeSpan);
 
     messagesDiv.appendChild(messageElement);
 
@@ -143,9 +160,40 @@ function loadMessageHistory() {
     fetch('/api/messages')
         .then(response => response.json())
         .then(messages => {
+            console.log('📋 Loaded', messages.length, 'messages from history');
             messages.forEach(message => displayMessage(message));
         })
-        .catch(error => console.error('Failed to load message history:', error));
+        .catch(error => {
+            console.error('Failed to load message history:', error);
+            showError('Could not load message history.');
+        });
+}
+
+// ============================================
+// DISCONNECT / LOGOUT
+// ============================================
+
+function disconnect() {
+    if (stompClient !== null) {
+        stompClient.disconnect(function () {
+            console.log('✅ Disconnected from chat');
+        });
+    }
+
+    // Clear session storage
+    sessionStorage.removeItem('currentUsername');
+
+    // Redirect to login
+    window.location.href = '/';
+}
+
+// ============================================
+// ERROR HANDLING
+// ============================================
+
+function showError(message) {
+    console.error('⚠️', message);
+    alert(message);
 }
 
 // ============================================
@@ -154,9 +202,16 @@ function loadMessageHistory() {
 
 sendButton.addEventListener('click', sendMessage);
 
+disconnectBtn.addEventListener('click', function () {
+    if (confirm('Are you sure you want to disconnect?')) {
+        disconnect();
+    }
+});
+
 // Allow sending with Enter key
 messageInput.addEventListener('keypress', function (event) {
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
         sendMessage();
     }
 });
