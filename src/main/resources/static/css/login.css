@@ -6,7 +6,7 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: white;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -28,6 +28,7 @@ body {
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
     width: 100%;
     max-width: 400px;
+    border-top: 4px solid #27ae60;
 }
 
 h1 {
@@ -67,8 +68,8 @@ input[type="text"] {
 
 input[type="text"]:focus {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color: #27ae60;
+    box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
 }
 
 input[type="text"]:disabled {
@@ -87,7 +88,7 @@ input[type="text"]:disabled {
 .btn-login {
     width: 100%;
     padding: 12px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #52c41a 0%, #27ae60 100%);
     color: white;
     border: none;
     border-radius: 6px;
@@ -99,7 +100,7 @@ input[type="text"]:disabled {
 
 .btn-login:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 5px 20px rgba(39, 174, 96, 0.4);
 }
 
 .btn-login:active {
@@ -115,8 +116,8 @@ input[type="text"]:disabled {
 .info {
     margin-top: 20px;
     padding: 12px;
-    background-color: #f0f7ff;
-    border-left: 4px solid #667eea;
+    background-color: #f0fdf4;
+    border-left: 4px solid #27ae60;
     border-radius: 4px;
 }
 

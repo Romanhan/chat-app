@@ -141,9 +141,7 @@ function displayMessage(message) {
     }
 
     messageElement.appendChild(senderSpan);
-    messageElement.appendChild(document.createElement('br'));
     messageElement.appendChild(textSpan);
-    messageElement.appendChild(document.createElement('br'));
     messageElement.appendChild(timeSpan);
 
     messagesDiv.appendChild(messageElement);
