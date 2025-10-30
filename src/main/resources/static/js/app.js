@@ -22,15 +22,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (!storedUsername) {
         // User not logged in - redirect to login page
-        console.log('No username found in session. Redirecting to login...');
         window.location.href = '/';
         return;
     }
 
     username = storedUsername;
     currentUserSpan.textContent = username;
-
-    console.log('✅ User session found:', username);
 
     // Auto-connect to chat
     connect();
@@ -47,8 +44,7 @@ function connect() {
     // Disable debug output for cleaner console
     stompClient.debug = null;
 
-    stompClient.connect({}, function (frame) {
-        console.log('✅ Connected to chat server');
+    stompClient.connect({ username: username }, function (frame) {
         isConnected = true;
 
         // Enable message input
@@ -57,9 +53,13 @@ function connect() {
 
         // Subscribe to receive messages
         stompClient.subscribe('/topic/messages', onMessageReceived);
+        stompClient.subscribe('/topic/onlineUsers', onlineUsersReceived);
 
         // Load message history from database
         loadMessageHistory();
+
+        // Load initial online users list
+        loadOnlineUsers();
     }, function (error) {
         console.error('❌ Connection failed:', error);
         isConnected = false;
@@ -113,6 +113,38 @@ function onMessageReceived(payload) {
 }
 
 // ============================================
+// RECEIVE ONLINE USERS UPDATE
+// ============================================
+
+function onlineUsersReceived(payload) {
+    const users = JSON.parse(payload.body);
+    updateOnlineUsersList(users);
+}
+
+// ============================================
+// UPDATE ONLINE USERS LIST
+// ============================================
+
+function updateOnlineUsersList(users) {
+    const userListElement = document.getElementById('userList');
+    userListElement.innerHTML = '';
+
+    // Sort users alphabetically
+    const sortedUsers = [...users].sort();
+
+    sortedUsers.forEach(user => {
+        const listItem = document.createElement('li');
+
+        if (user === username) {
+            listItem.classList.add('current-user');
+        }
+
+        listItem.textContent = user;
+        userListElement.appendChild(listItem);
+    })
+}
+
+// ============================================
 // DISPLAY MESSAGE
 // ============================================
 
@@ -158,7 +190,6 @@ function loadMessageHistory() {
     fetch('/api/messages')
         .then(response => response.json())
         .then(messages => {
-            console.log('📋 Loaded', messages.length, 'messages from history');
             messages.forEach(message => displayMessage(message));
         })
         .catch(error => {
@@ -168,14 +199,27 @@ function loadMessageHistory() {
 }
 
 // ============================================
+// LOAD ONLINE USERS
+// ============================================
+
+function loadOnlineUsers() {
+    fetch('/api/online-users')
+        .then(response => response.json())
+        .then(users => {
+            updateOnlineUsersList(users);
+        })
+        .catch(error => {
+            console.error('Failed to load online users:', error);
+        });
+}
+
+// ============================================
 // DISCONNECT / LOGOUT
 // ============================================
 
 function disconnect() {
     if (stompClient !== null) {
-        stompClient.disconnect(function () {
-            console.log('✅ Disconnected from chat');
-        });
+        stompClient.disconnect();
     }
 
     // Clear session storage
