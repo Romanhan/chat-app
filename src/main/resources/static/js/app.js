@@ -10,7 +10,6 @@ const messageInput = document.getElementById('message');
 const sendButton = document.getElementById('send');
 const messagesDiv = document.getElementById('messages');
 const disconnectBtn = document.getElementById('disconnectBtn');
-const currentUserSpan = document.querySelector('#currentUser strong');
 
 // ============================================
 // INITIALIZE ON PAGE LOAD
@@ -27,7 +26,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     username = storedUsername;
-    currentUserSpan.textContent = username;
 
     // Auto-connect to chat
     connect();
