@@ -1,5 +1,7 @@
 package com.romanhan.chatapp.service;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import com.romanhan.chatapp.model.Message;
@@ -14,11 +16,15 @@ public class MessageService {
         this.messageRepository = messageRepository;
     }
 
-    public void saveMessage(Message message) {
-        messageRepository.save(message);
+    public Message saveMessage(Message message) {
+        return messageRepository.save(message);
     }
 
     public Iterable<Message> getAllMessages() {
         return messageRepository.findAll();
+    }
+
+    public Optional<Message> findById(Long id) {
+        return messageRepository.findById(id);
     }
 }
