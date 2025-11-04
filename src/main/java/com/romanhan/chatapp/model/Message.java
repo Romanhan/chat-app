@@ -26,9 +26,13 @@ public class Message {
     private String text;
     @Column(nullable = false, updatable = false)
     private LocalDateTime timestamp;
+    private boolean isDeleted;
+    private boolean isEdited;
+    private LocalDateTime editedAt;
 
     @PrePersist
     protected void onCreate() {
         this.timestamp = LocalDateTime.now();
     }
+
 }
