@@ -107,7 +107,68 @@ function sendMessage() {
 
 function onMessageReceived(payload) {
     const message = JSON.parse(payload.body);
-    displayMessage(message);
+
+    const existingMessage = document.querySelector(`.message[data-message-id='${message.id}']`);
+
+    if (existingMessage) {
+        updateExistingMessage(existingMessage, message);
+    } else {
+        displayMessage(message);
+    }
+}
+
+// ============================================
+// HELPER: Mark message as deleted (UI update)
+// ============================================
+
+function markMessageAsDeleted(messageElement) {
+    const textSpan = messageElement.querySelector('.message-text');
+    textSpan.textContent = 'Message was deleted';
+    textSpan.classList.add('deleted-message');
+
+    // Remove [edited] label if exists
+    const editedLabel = messageElement.querySelector('.edited-label');
+    if (editedLabel) {
+        editedLabel.remove();
+    }
+
+    // Remove action buttons
+    const actionsDiv = messageElement.querySelector('.message-actions');
+    if (actionsDiv) {
+        actionsDiv.remove();
+    }
+}
+
+// ============================================
+// HELPER: Mark message as edited (UI update)
+// ============================================
+
+function markMessageAsEdited(messageElement, newText) {
+    const textSpan = messageElement.querySelector('.message-text');
+    textSpan.textContent = newText;
+
+    // Add [edited] label if not already there
+    let editedLabel = messageElement.querySelector('.edited-label');
+    if (!editedLabel) {
+        editedLabel = document.createElement('span');
+        editedLabel.classList.add('edited-label');
+        editedLabel.textContent = ' [edited]';
+
+        const timeSpan = messageElement.querySelector('.message-time');
+        timeSpan.appendChild(editedLabel);
+    }
+}
+
+// ============================================
+// UPDATE EXISTING MESSAGE (for WebSocket broadcasts)
+// ============================================
+
+function updateExistingMessage(messageElement, message) {
+    if (message.deleted) {
+        markMessageAsDeleted(messageElement);
+    } else if (message.edited) {
+        markMessageAsEdited(messageElement, message.text);
+    }
 }
 
 // ============================================
@@ -163,7 +224,13 @@ function displayMessage(message) {
 
     const textSpan = document.createElement('span');
     textSpan.classList.add('message-text');
-    textSpan.textContent = message.text;
+
+    if (message.deleted) {
+        textSpan.textContent = 'Message was deleted';
+        textSpan.classList.add('deleted-message');
+    } else {
+        textSpan.textContent = message.text;
+    }
 
     const timeSpan = document.createElement('small');
     timeSpan.classList.add('message-time');
@@ -369,23 +436,14 @@ async function saveEditedMessage(messageId, newText, messageElement, originalTex
 
         const updatedMessage = await response.json();
 
+        // Update UI using helper function
+        markMessageAsEdited(messageElement, updatedMessage.text);
+
+        // Exit edit mode
         const textSpan = messageElement.querySelector('.message-text');
         const actionsDiv = messageElement.querySelector('.message-actions');
         const editInput = messageElement.querySelector('.edit-input');
         const editActionsDiv = messageElement.querySelector('.edit-actions');
-
-        textSpan.textContent = updatedMessage.text;
-
-        let editedLabel = messageElement.querySelector('.edited-label');
-        if (!editedLabel) {
-            editedLabel = document.createElement('span');
-            editedLabel.classList.add('edited-label');
-            editedLabel.textContent = ' [edited]';
-
-            const timeSpan = messageElement.querySelector('.message-time');
-            timeSpan.appendChild(editedLabel);
-        }
-
         cancelEdit(messageElement, textSpan, actionsDiv, editInput, editActionsDiv);
 
     } catch (error) {
@@ -405,6 +463,37 @@ function cancelEdit(messageElement, textSpan, actionsDiv, editInput, editActions
     textSpan.style.display = '';
     if (actionsDiv) {
         actionsDiv.style.display = '';
+    }
+}
+
+// ============================================
+// DELETE MESSAGE
+// ============================================
+
+async function deleteMessage(messageId, messageElement) {
+    if (!confirm('Are you sure you want to delete this message?')) {
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/messages/' + messageId, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ sender: username })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Server returned ${response.status}: ${response.statusText}`);
+        }
+
+        // Update UI using helper function
+        markMessageAsDeleted(messageElement);
+
+    } catch (error) {
+        console.error('Failed to delete message:', error);
+        showError('Failed to delete message. Please try again.');
     }
 }
 

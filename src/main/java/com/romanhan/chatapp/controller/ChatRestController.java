@@ -6,6 +6,8 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -23,10 +25,13 @@ public class ChatRestController {
 
     private final MessageService messageService;
     private final UserService userService;
+    private final SimpMessagingTemplate messagingTemplate;
 
-    public ChatRestController(MessageService messageService, UserService userService) {
+    public ChatRestController(MessageService messageService, UserService userService,
+            SimpMessagingTemplate messagingTemplate) {
         this.messageService = messageService;
         this.userService = userService;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @GetMapping("/messages")
@@ -62,8 +67,34 @@ public class ChatRestController {
         message.setEditedAt(LocalDateTime.now());
 
         Message savedMessage = messageService.saveMessage(message);
+        messagingTemplate.convertAndSend("/topic/messages", savedMessage);
 
         return ResponseEntity.ok(savedMessage);
+    }
 
+    @DeleteMapping("/messages/{id}")
+    public ResponseEntity<?> deleteMessage(@PathVariable Long id, @RequestBody Map<String, String> payload) {
+        String sender = payload.get("sender");
+
+        Message message = messageService.findById(id).orElse(null);
+        if (message == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        if (!message.getSender().equals(sender)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        if (message.isDeleted()) {
+            return ResponseEntity.badRequest().body("Message is already deleted.");
+        }
+
+        message.setDeleted(true);
+        message.setDeletedAt(LocalDateTime.now());
+
+        Message savedMessage = messageService.saveMessage(message);
+        messagingTemplate.convertAndSend("/topic/messages", savedMessage);
+
+        return ResponseEntity.ok(savedMessage);
     }
 }
