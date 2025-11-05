@@ -444,6 +444,7 @@ body {
 
 /* Deleted message styling */
 .deleted-message {
+    font-size: 13px;
     font-style: italic;
     opacity: 0.6;
 }

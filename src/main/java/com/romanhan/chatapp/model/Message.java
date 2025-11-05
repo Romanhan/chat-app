@@ -29,6 +29,7 @@ public class Message {
     private boolean isDeleted;
     private boolean isEdited;
     private LocalDateTime editedAt;
+    private LocalDateTime deletedAt;
 
     @PrePersist
     protected void onCreate() {
