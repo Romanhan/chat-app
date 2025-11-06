@@ -5,6 +5,10 @@
 let stompClient = null;
 let username = "";
 let isConnected = false;
+let typingTimeout = null;
+let isCurrentlyTyping = false;
+let typingInterval = null;
+let typingHideTimeout = null;
 
 const messageInput = document.getElementById('message');
 const sendButton = document.getElementById('send');
@@ -52,6 +56,7 @@ function connect() {
         // Subscribe to receive messages
         stompClient.subscribe('/topic/messages', onMessageReceived);
         stompClient.subscribe('/topic/onlineUsers', onlineUsersReceived);
+        stompClient.subscribe('/topic/typing', onTypingRecieved);
 
         // Load message history from database
         loadMessageHistory();
@@ -114,6 +119,16 @@ function onMessageReceived(payload) {
         updateExistingMessage(existingMessage, message);
     } else {
         displayMessage(message);
+        // If we receive a message from someone, they're done typing
+        const typingUsernameElement = document.getElementById('typing-username');
+        if (typingUsernameElement.textContent.includes(message.sender)) {
+            // Hide the typing indicator
+            if (typingHideTimeout) {
+                clearTimeout(typingHideTimeout);
+            }
+            typingUsernameElement.textContent = '';
+            document.getElementById('typing-indicator').style.display = 'none';
+        }
     }
 }
 
@@ -203,6 +218,32 @@ function updateOnlineUsersList(users) {
     })
 }
 
+// ============================================
+// RECEIVE TYPING NOTIFICATION
+// ============================================
+
+function onTypingRecieved(payload) {
+    const typingUsername = payload.body;
+
+    if (typingUsername && typingUsername !== username) {
+        const usernameElement = document.getElementById('typing-username');
+        usernameElement.textContent = typingUsername + ' is typing';
+
+        const typingIndicator = document.getElementById('typing-indicator');
+        typingIndicator.style.display = 'flex';
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+        if (typingHideTimeout) {
+            clearTimeout(typingHideTimeout);
+        }
+
+        // Set new hide timeout
+        typingHideTimeout = setTimeout(() => {
+            usernameElement.textContent = '';
+            typingIndicator.style.display = 'none';
+        }, 3000);
+    }
+}
 // ============================================
 // DISPLAY MESSAGE
 // ============================================
@@ -515,4 +556,35 @@ messageInput.addEventListener('keypress', function (event) {
         event.preventDefault();
         sendMessage();
     }
+});
+
+// Typing notification
+messageInput.addEventListener('input', function () {
+    if (!isCurrentlyTyping) {
+        if (stompClient && isConnected) {
+            stompClient.send("/app/typing", {}, username);
+        }
+
+        isCurrentlyTyping = true;
+
+        typingInterval = setInterval(function () {
+            if (stompClient && isConnected) {
+                stompClient.send("/app/typing", {}, username);
+            }
+        }, 2000);
+    }
+
+    if (typingTimeout) {
+        clearTimeout(typingTimeout);
+    }
+
+    typingTimeout = setTimeout(function () {
+        isCurrentlyTyping = false;
+
+        // Stop sending periodic updates
+        if (typingInterval) {
+            clearInterval(typingInterval);
+            typingInterval = null;
+        }
+    }, 1000);
 });
