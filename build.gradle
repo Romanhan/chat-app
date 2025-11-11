@@ -5,8 +5,8 @@ plugins {
 }
 
 group = 'com.romanhan'
-version = '0.0.1-SNAPSHOT'
-description = 'Demo project for Spring Boot'
+version = '0.1.0'
+description = 'Chat Application'
 
 java {
 	toolchain {
