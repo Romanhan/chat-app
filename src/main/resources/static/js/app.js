@@ -14,6 +14,9 @@ const messageInput = document.getElementById('message');
 const sendButton = document.getElementById('send');
 const messagesDiv = document.getElementById('messages');
 const disconnectBtn = document.getElementById('disconnectBtn');
+const emojiBtn = document.getElementById('emoji-btn');
+const emojiPicker = document.getElementById('emoji-picker');
+const emojiItems = document.querySelectorAll('.emoji-item');
 
 // ============================================
 // INITIALIZE ON PAGE LOAD
@@ -426,7 +429,6 @@ function startEditMessage(messageElement, message) {
     messageElement.insertBefore(editActionsDiv, timeSpan);
 
     editInput.focus();
-    editInput.select();
 
     editInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
@@ -539,6 +541,37 @@ async function deleteMessage(messageId, messageElement) {
 }
 
 // ============================================
+// INSERT EMOJI AT CURSOR POSITION
+// ============================================
+
+function insertEmojiAtCursor(emoji) {
+    const editInput = document.querySelector('.edit-input');
+
+    let targetInput;
+
+    if (editInput) {
+        targetInput = editInput;
+    } else {
+        targetInput = messageInput;
+    }
+
+    const currentPos = targetInput.selectionStart;
+    const currentText = targetInput.value;
+
+    const messageBefore = currentText.slice(0, currentPos);
+    const messageAfter = currentText.slice(currentPos);
+
+    const newText = messageBefore + emoji + messageAfter;
+
+    targetInput.value = newText;
+
+    const newCursorPos = currentPos + emoji.length;
+
+    targetInput.setSelectionRange(newCursorPos, newCursorPos);
+    targetInput.focus();
+}
+
+// ============================================
 // EVENT LISTENERS
 // ============================================
 
@@ -588,3 +621,30 @@ messageInput.addEventListener('input', function () {
         }
     }, 1000);
 });
+
+// Emoji picker toggle
+emojiBtn.addEventListener('click', function () {
+    if (emojiPicker.style.display === 'none') {
+        emojiPicker.style.display = 'block';
+    } else {
+        emojiPicker.style.display = 'none';
+    }
+})
+
+// Close emoji picker when clicking outside
+document.addEventListener('click', function (event) {
+    if (!emojiPicker.contains(event.target) && event.target !== emojiBtn) {
+        emojiPicker.style.display = 'none';
+    }
+})
+
+// Insert emoji into message input
+emojiItems.forEach(function (emojiItems) {
+    emojiItems.addEventListener('click', function () {
+        const emoji = this.textContent;
+
+        insertEmojiAtCursor(emoji);
+        emojiPicker.style.display = 'none';
+        messageInput.focus();
+    })
+})
