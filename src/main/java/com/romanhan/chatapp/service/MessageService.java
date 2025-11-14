@@ -20,8 +20,8 @@ public class MessageService {
         return messageRepository.save(message);
     }
 
-    public Iterable<Message> getAllMessages() {
-        return messageRepository.findAll();
+    public Iterable<Message> getRecentMessages() {
+        return messageRepository.findTop50ByOrderByTimestampDesc();
     }
 
     public Optional<Message> findById(Long id) {

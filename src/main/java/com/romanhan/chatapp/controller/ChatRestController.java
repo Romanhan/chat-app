@@ -36,12 +36,18 @@ public class ChatRestController {
 
     @GetMapping("/messages")
     public Iterable<Message> getMessages() {
-        return messageService.getAllMessages();
+        return messageService.getRecentMessages();
     }
 
     @GetMapping("/online-users")
     public List<String> getOnlineUsers() {
         return userService.getOnlineUsernames();
+    }
+
+    @GetMapping("/check-username/{username}")
+    public ResponseEntity<Map<String, Boolean>> checkUsername(@PathVariable String username) {
+        boolean isTaken = userService.isUserOnline(username);
+        return ResponseEntity.ok(Map.of("available", !isTaken));
     }
 
     @PutMapping("/messages/{id}")
