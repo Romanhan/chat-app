@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Room</title>
     <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/components.css">
     <link rel="stylesheet" href="/css/chat.css">
 </head>
 
@@ -36,6 +37,13 @@
         </div>
 
         <div class="input-area">
+            <div id="error-banner" class="error-banner" style="display: none;">
+                <span class="error-icon">❌</span>
+                <span id="error-message"></span>
+                <button class="error-close"
+                    onclick="document.getElementById('error-banner').style.display='none'">×</button>
+            </div>
+
             <button type="button" id="emoji-btn" class="btn-emoji">😊</button>
             <div id="emoji-picker" class="emoji-picker" style="display: none;">
                 <span class="emoji-item">😀</span>

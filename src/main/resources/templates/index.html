@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat App - Login</title>
     <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/components.css">
     <link rel="stylesheet" href="/css/login.css">
 </head>
 
@@ -17,10 +18,15 @@
 
             <form id="loginForm">
                 <div class="form-group">
+                    <div id="error-banner" class="error-banner" style="display: none;">
+                        <span class="error-icon">❌</span>
+                        <span class="error-message" id="error-message"></span>
+                        <button type="button" class="error-close" onclick="this.parentElement.style.display='none'">×</button>
+                    </div>
+
                     <label for="username">Username</label>
                     <input type="text" id="username" name="username" placeholder="Enter your username" required
                         minlength="1" maxlength="20">
-                    <span class="error" id="usernameError"></span>
                 </div>
 
                 <button type="submit" class="btn-login">Enter Chat</button>

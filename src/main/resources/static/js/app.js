@@ -86,6 +86,11 @@ function sendMessage() {
         return;
     }
 
+    if (messageText.length > 300) {
+        showError('Message exceeds maximum length of 300 characters.');
+        return;
+    }
+
     if (!isConnected) {
         showError('Not connected to chat. Please refresh the page.');
         return;
@@ -318,8 +323,6 @@ function displayMessage(message) {
         messageElement.appendChild(actionsDiv);
     }
 
-    messagesDiv.appendChild(messageElement);
-
     // Auto-scroll to bottom
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
@@ -377,7 +380,15 @@ function disconnect() {
 
 function showError(message) {
     console.error('⚠️', message);
-    alert(message);
+    const banner = document.getElementById('error-banner');
+    const messageSpan = document.getElementById('error-message');
+    messageSpan.textContent = message;
+    banner.style.display = 'flex';
+
+    // Auto-hide after 5 seconds
+    setTimeout(() => {
+        banner.style.display = 'none';
+    }, 5000);
 }
 
 // ============================================

@@ -2,11 +2,12 @@ package com.romanhan.chatapp.controller;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.romanhan.chatapp.model.Message;
 import com.romanhan.chatapp.service.MessageService;
+
+import jakarta.validation.Valid;
 
 @RestController
 public class MessageController {
@@ -19,14 +20,14 @@ public class MessageController {
 
     @MessageMapping("/chat")
     @SendTo("/topic/messages")
-    public Message sendMessage(Message message) {
+    public Message sendMessage(@Valid Message message) {
         messageService.saveMessage(message);
         return message;
     }
 
     @MessageMapping("/typing")
     @SendTo("/topic/typing")
-    public String handleTyping(String username) {
+    public String handleTyping(@Valid String username) {
         return username;
     }
 }

@@ -20,7 +20,8 @@ body {
     background: var(--color-bg-white);
     width: 100%;
     max-width: 50rem;
-    height: 90vh; /* Mobile: full viewport height */
+    height: 90vh;
+    /* Mobile: full viewport height */
     border-radius: 0.75rem;
     box-shadow: 0 0.25rem 0.9375rem var(--shadow-light);
     display: flex;
@@ -31,7 +32,8 @@ body {
 .chat-header {
     background: var(--gradient-primary);
     color: var(--color-bg-white);
-    padding: 0.75rem 0.9375rem; /* Mobile: smaller padding */
+    padding: 0.75rem 0.9375rem;
+    /* Mobile: smaller padding */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -52,9 +54,12 @@ body {
 
 .header-info {
     display: flex;
-    gap: 0.625rem; /* Mobile: smaller gap */
-    flex-direction: column; /* Mobile: stack vertically */
-    align-items: flex-end; /* Mobile: align to right */
+    gap: 0.625rem;
+    /* Mobile: smaller gap */
+    flex-direction: column;
+    /* Mobile: stack vertically */
+    align-items: flex-end;
+    /* Mobile: align to right */
 }
 
 .btn-disconnect {
@@ -81,7 +86,8 @@ body {
 .messages {
     flex: 1;
     padding: 0.9375rem;
-    padding-bottom: 3.75rem; /* Mobile: more space for action buttons */
+    padding-bottom: 3.75rem;
+    /* Mobile: more space for action buttons */
     /* Extra space for message action buttons on last message */
     overflow-y: auto;
     display: flex;
@@ -152,7 +158,8 @@ body {
     padding: 0;
     overflow-y: auto;
     flex-shrink: 0;
-    display: none; /* Mobile: hidden by default */
+    display: none;
+    /* Mobile: hidden by default */
     flex-direction: column;
 }
 
@@ -298,24 +305,28 @@ body {
 /* Tablet and up: Show sidebar */
 @media (min-width: 769px) {
     .user-list {
-        display: flex; /* Show on tablets and desktops */
+        display: flex;
+        /* Show on tablets and desktops */
     }
 }
 
 .input-area {
     display: flex;
     align-items: center;
-    padding: 0.75rem; /* Mobile: smaller padding */
+    padding: 0.75rem;
+    /* Mobile: smaller padding */
     border-top: 1px solid var(--color-border);
     background: var(--color-bg-white);
-    gap: 0.5rem; /* Mobile: smaller gap */
+    gap: 0.5rem;
+    /* Mobile: smaller gap */
     flex-shrink: 0;
     position: relative;
 }
 
 #message {
     flex: 1;
-    padding: 0.5rem 0.75rem; /* Mobile: smaller padding */
+    padding: 0.5rem 0.75rem;
+    /* Mobile: smaller padding */
     border: 2px solid var(--color-border);
     border-radius: 0.375rem;
     font-size: clamp(0.8125rem, 1vw + 0.5rem, 0.875rem);
@@ -339,7 +350,8 @@ body {
     background: var(--gradient-primary);
     color: var(--color-bg-white);
     border: none;
-    padding: 0.5rem 1rem; /* Mobile: smaller padding */
+    padding: 0.5rem 1rem;
+    /* Mobile: smaller padding */
     border-radius: 0.375rem;
     cursor: pointer;
     font-weight: 600;
@@ -365,34 +377,44 @@ body {
 /* Desktop enhancements (601px and up) */
 @media (min-width: 601px) {
     .chat-container {
-        height: 37.5rem; /* Desktop: fixed height */
+        height: 37.5rem;
+        /* Desktop: fixed height */
     }
 
     .chat-header {
-        padding: 0.9375rem 1.25rem; /* Desktop: larger padding */
+        padding: 0.9375rem 1.25rem;
+        /* Desktop: larger padding */
     }
 
     .header-info {
-        gap: 0.9375rem; /* Desktop: larger gap */
-        flex-direction: row; /* Desktop: horizontal layout */
-        align-items: center; /* Desktop: center align */
+        gap: 0.9375rem;
+        /* Desktop: larger gap */
+        flex-direction: row;
+        /* Desktop: horizontal layout */
+        align-items: center;
+        /* Desktop: center align */
     }
 
     .messages {
-        padding-bottom: 3.125rem; /* Desktop: less space needed */
+        padding-bottom: 3.125rem;
+        /* Desktop: less space needed */
     }
 
     .input-area {
-        padding: 0.9375rem; /* Desktop: larger padding */
-        gap: 0.625rem; /* Desktop: larger gap */
+        padding: 0.9375rem;
+        /* Desktop: larger padding */
+        gap: 0.625rem;
+        /* Desktop: larger gap */
     }
 
     #message {
-        padding: 0.625rem 0.875rem; /* Desktop: larger padding */
+        padding: 0.625rem 0.875rem;
+        /* Desktop: larger padding */
     }
 
     .btn-send {
-        padding: 0.625rem 1.25rem; /* Desktop: larger padding */
+        padding: 0.625rem 1.25rem;
+        /* Desktop: larger padding */
     }
 }
 
