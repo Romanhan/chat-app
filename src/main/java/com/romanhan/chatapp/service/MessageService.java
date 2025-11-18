@@ -3,6 +3,7 @@ package com.romanhan.chatapp.service;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.lang.NonNull;
 
 import com.romanhan.chatapp.model.Message;
 import com.romanhan.chatapp.repository.MessageRepository;
@@ -16,7 +17,7 @@ public class MessageService {
         this.messageRepository = messageRepository;
     }
 
-    public Message saveMessage(Message message) {
+    public @NonNull Message saveMessage(@NonNull Message message) {
         return messageRepository.save(message);
     }
 
@@ -24,7 +25,7 @@ public class MessageService {
         return messageRepository.findTop50ByOrderByTimestampDesc();
     }
 
-    public Optional<Message> findById(Long id) {
+    public Optional<Message> findById(@NonNull Long id) {
         return messageRepository.findById(id);
     }
 }

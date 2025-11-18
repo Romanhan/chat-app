@@ -21,8 +21,7 @@ public class MessageController {
     @MessageMapping("/chat")
     @SendTo("/topic/messages")
     public Message sendMessage(@Valid Message message) {
-        messageService.saveMessage(message);
-        return message;
+        return messageService.saveMessage(message);
     }
 
     @MessageMapping("/typing")
