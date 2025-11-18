@@ -31,7 +31,12 @@ public class WebSocketEventListener {
             return;
         }
 
-        headerAccessor.getSessionAttributes().put("username", username);
+        var sessionAttributes = headerAccessor.getSessionAttributes();
+        if (sessionAttributes == null) {
+            return;
+        }
+
+        sessionAttributes.put("username", username);
 
         userService.addUser(sessionId, username);
         messagingTemplate.convertAndSend("/topic/onlineUsers", userService.getOnlineUsernames());
@@ -43,13 +48,12 @@ public class WebSocketEventListener {
         String sessionId = headerAccessor.getSessionId();
 
         if (sessionId != null) {
-            // Retrieve username from session attributes
-            String username = (String) headerAccessor.getSessionAttributes().get("username");
+            var sessionAttributes = headerAccessor.getSessionAttributes();
+            if (sessionAttributes != null) {
+                userService.removeUser(sessionId);
+                messagingTemplate.convertAndSend("/topic/onlineUsers", userService.getOnlineUsernames());
+            }
 
-            userService.removeUser(sessionId);
-
-            // Broadcast updated online users list
-            messagingTemplate.convertAndSend("/topic/onlineUsers", userService.getOnlineUsernames());
         }
     }
 
