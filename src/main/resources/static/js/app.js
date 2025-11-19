@@ -335,7 +335,7 @@ function loadMessageHistory() {
     fetch('/api/messages')
         .then(response => response.json())
         .then(messages => {
-            messages.forEach(message => displayMessage(message));
+            messages.reverse().forEach(message => displayMessage(message));
         })
         .catch(error => {
             console.error('Failed to load message history:', error);
