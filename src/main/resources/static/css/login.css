@@ -7,7 +7,7 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: var(--font-primary);
     background: var(--color-bg-white);
     display: flex;
     justify-content: center;
@@ -25,12 +25,12 @@ body {
 
 .login-box {
     background: var(--color-bg-white);
-    padding: 1.875rem 1.25rem; /* Mobile: smaller padding */
-    border-radius: 0.75rem;
-    box-shadow: 0 0.625rem 2.5rem var(--shadow-dark);
+    padding: 1.875rem 1.25rem;
+    /* Mobile: smaller padding */
+    border-radius: 1.25rem;
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.2);
     width: 100%;
     max-width: 25rem;
-    border-top: 0.25rem solid var(--color-secondary);
 }
 
 h1 {
@@ -51,19 +51,16 @@ h1 {
     margin-bottom: 1.25rem;
 }
 
-label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: var(--color-text);
-    font-weight: 500;
-    font-size: clamp(0.8125rem, 1vw + 0.5rem, 0.875rem);
+/* Error banner in login box */
+.login-box > .error-banner {
+    margin-bottom: 1rem;
 }
 
 input[type="text"] {
     width: 100%;
-    padding: 0.75rem;
+    padding: 0.75rem 1rem;
     border: 2px solid var(--color-border);
-    border-radius: 0.375rem;
+    border-radius: 1.5rem;
     font-size: clamp(0.875rem, 1vw + 0.5rem, 1rem);
     transition: border-color 0.3s;
 }
@@ -89,38 +86,41 @@ input[type="text"]:disabled {
 
 .btn-login {
     width: 100%;
-    padding: 0.625rem; /* Mobile: smaller padding */
+    padding: 0.75rem;
+    /* Mobile: smaller padding */
     background: var(--gradient-primary);
     color: var(--color-text-white);
     border: none;
-    border-radius: 0.375rem;
+    border-radius: 1.5rem;
     font-size: clamp(0.875rem, 1vw + 0.5rem, 1rem);
     font-weight: 600;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: all 0.2s;
 }
 
 .btn-login:hover {
-    transform: translateY(-0.125rem);
-    box-shadow: 0 0.3125rem 1.25rem var(--shadow-secondary-strong);
+    filter: brightness(1.1);
+}
+
+.btn-login:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--shadow-secondary-light);
 }
 
 .btn-login:active {
-    transform: translateY(0);
+    opacity: 0.9;
 }
 
 .btn-login:disabled {
     background: var(--color-scrollbar-thumb);
     cursor: not-allowed;
-    transform: none;
 }
 
 .info {
     margin-top: 1.25rem;
-    padding: 0.75rem;
+    padding: 1rem;
     background-color: var(--color-bg-hover);
-    border-left: 0.25rem solid var(--color-secondary);
-    border-radius: 0.25rem;
+    border-radius: 1.5rem;
 }
 
 .info p {
@@ -132,10 +132,12 @@ input[type="text"]:disabled {
 /* Desktop enhancements (601px and up) */
 @media (min-width: 601px) {
     .login-box {
-        padding: 2.5rem; /* Desktop: larger padding */
+        padding: 2.5rem;
+        /* Desktop: larger padding */
     }
 
     .btn-login {
-        padding: 0.75rem; /* Desktop: larger padding */
+        padding: 0.875rem;
+        /* Desktop: larger padding */
     }
 }
