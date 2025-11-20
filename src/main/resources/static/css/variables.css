@@ -1,5 +1,8 @@
 /* Shared CSS Variables - Used by all pages */
 :root {
+    /* Typography */
+    --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+
     /* Theme Colors - Easy to tweak! */
     --color-primary: #52c41a;
     --color-secondary: #27ae60;

@@ -19,6 +19,75 @@ const emojiPicker = document.getElementById('emoji-picker');
 const emojiItems = document.querySelectorAll('.emoji-item');
 
 // ============================================
+// CUSTOM CONFIRMATION MODAL
+// ============================================
+
+/**
+ * Show a custom confirmation modal
+ * @param {string} title - Modal title
+ * @param {string} message - Confirmation message
+ * @returns {Promise<boolean>} - Resolves to true if confirmed, false if cancelled
+ */
+function showConfirmationModal(title, message) {
+    return new Promise((resolve) => {
+        const modal = document.getElementById('confirmation-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalMessage = document.getElementById('modal-message');
+        const confirmBtn = document.getElementById('modal-confirm');
+        const cancelBtn = document.getElementById('modal-cancel');
+
+        // Set content
+        modalTitle.textContent = title;
+        modalMessage.textContent = message;
+
+        // Show modal
+        modal.style.display = 'flex';
+
+        // Handle confirm
+        const handleConfirm = () => {
+            modal.style.display = 'none';
+            cleanup();
+            resolve(true);
+        };
+
+        // Handle cancel
+        const handleCancel = () => {
+            modal.style.display = 'none';
+            cleanup();
+            resolve(false);
+        };
+
+        // Handle backdrop click
+        const handleBackdropClick = (e) => {
+            if (e.target === modal) {
+                handleCancel();
+            }
+        };
+
+        // Handle escape key
+        const handleEscape = (e) => {
+            if (e.key === 'Escape') {
+                handleCancel();
+            }
+        };
+
+        // Add event listeners
+        confirmBtn.addEventListener('click', handleConfirm);
+        cancelBtn.addEventListener('click', handleCancel);
+        modal.addEventListener('click', handleBackdropClick);
+        document.addEventListener('keydown', handleEscape);
+
+        // Cleanup function to remove event listeners
+        function cleanup() {
+            confirmBtn.removeEventListener('click', handleConfirm);
+            cancelBtn.removeEventListener('click', handleCancel);
+            modal.removeEventListener('click', handleBackdropClick);
+            document.removeEventListener('keydown', handleEscape);
+        }
+    });
+}
+
+// ============================================
 // INITIALIZE ON PAGE LOAD
 // ============================================
 
@@ -525,7 +594,12 @@ function cancelEdit(messageElement, textSpan, actionsDiv, editInput, editActions
 // ============================================
 
 async function deleteMessage(messageId, messageElement) {
-    if (!confirm('Are you sure you want to delete this message?')) {
+    const confirmed = await showConfirmationModal(
+        'Delete Message',
+        'Are you sure you want to delete this message?'
+    );
+
+    if (!confirmed) {
         return;
     }
 
@@ -588,8 +662,13 @@ function insertEmojiAtCursor(emoji) {
 
 sendButton.addEventListener('click', sendMessage);
 
-disconnectBtn.addEventListener('click', function () {
-    if (confirm('Are you sure you want to disconnect?')) {
+disconnectBtn.addEventListener('click', async function () {
+    const confirmed = await showConfirmationModal(
+        'Disconnect',
+        'Are you sure you want to disconnect?'
+    );
+
+    if (confirmed) {
         disconnect();
     }
 });

@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat App - Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/variables.css">
     <link rel="stylesheet" href="/css/components.css">
     <link rel="stylesheet" href="/css/login.css">
@@ -16,15 +19,14 @@
             <h1>Chat App</h1>
             <p class="subtitle">Real-time messaging with friends</p>
 
+            <div id="error-banner" class="error-banner" style="display: none;">
+                <span class="error-icon">❌</span>
+                <span class="error-message" id="error-message"></span>
+                <button type="button" class="error-close" onclick="this.parentElement.style.display='none'">×</button>
+            </div>
+
             <form id="loginForm">
                 <div class="form-group">
-                    <div id="error-banner" class="error-banner" style="display: none;">
-                        <span class="error-icon">❌</span>
-                        <span class="error-message" id="error-message"></span>
-                        <button type="button" class="error-close" onclick="this.parentElement.style.display='none'">×</button>
-                    </div>
-
-                    <label for="username">Username</label>
                     <input type="text" id="username" name="username" placeholder="Enter your username" required
                         minlength="1" maxlength="20">
                 </div>
