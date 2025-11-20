@@ -1,6 +1,6 @@
 # Chat App (Java + Spring + Vanilla JS)
 
-**Version:** 0.1.3
+**Version:** 0.2.0
 
 A simple real-time chat web application built to learn **Java**, **Spring Boot**, and **WebSockets**.  
 The project starts small and grows step by step — from a local chat to a deployable web app.
@@ -24,8 +24,8 @@ The project starts small and grows step by step — from a local chat to a deplo
 - ✅ Responsive design for mobile and desktop
 
 ## Screenshots
-![Login page](screenshots/screenshot-2025-11-11_15-38-04.png)
-![Chat page](screenshots/screenshot-2025-11-11_15-37-31.png)
+![Login page](screenshots/screenshot-2025-11-20_14-32-11.png)
+![Chat page](screenshots/screenshot-2025-11-20_15-00-53.png)
 
 ## Setup guide
 
