@@ -157,6 +157,15 @@ body {
     border-bottom-left-radius: 0.25rem;
 }
 
+/* Mention Styling */
+.mention {
+    font-weight: 600;
+}
+
+.message.received .mention {
+    color: var(--color-primary);
+}
+
 /* Online Users Sidebar */
 .user-list {
     width: 9.375rem;
