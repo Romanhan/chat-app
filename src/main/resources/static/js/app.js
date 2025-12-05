@@ -290,6 +290,8 @@ function updateOnlineUsersList(users) {
             listItem.classList.add('current-user');
         }
 
+        listItem.addEventListener('click', () => insertUserMention(user));
+
         listItem.textContent = user;
         userListElement.appendChild(listItem);
     })
@@ -347,7 +349,7 @@ function displayMessage(message) {
         textSpan.textContent = 'Message was deleted';
         textSpan.classList.add('deleted-message');
     } else {
-        textSpan.textContent = message.text;
+        textSpan.innerHTML = parseMessageMentions(escapeHtml(message.text));
     }
 
     const timeSpan = document.createElement('small');
@@ -394,6 +396,25 @@ function displayMessage(message) {
 
     // Auto-scroll to bottom
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+// ============================================
+// PARSE USER MENTIONS
+// ============================================
+
+function parseMessageMentions(text) {
+    const regex = /@(\w+)/g;
+    return text.replace(regex, '<span class="mention">$&</span>');
+}
+
+// ============================================
+// ESCAPE HTML
+// ============================================
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 // ============================================
@@ -623,6 +644,30 @@ async function deleteMessage(messageId, messageElement) {
         console.error('Failed to delete message:', error);
         showError('Failed to delete message. Please try again.');
     }
+}
+
+// ============================================
+// INSERT USER MENTION INTO MESSAGE INPUT
+// ============================================
+
+
+function insertUserMention(user) {
+    const mention = `@${user} `;
+    const currentPos = messageInput.selectionStart;
+    const currentText = messageInput.value;
+
+    const messageBefore = currentText.slice(0, currentPos);
+    const messageAfter = currentText.slice(currentPos);
+
+    const needSpaceBefore = messageBefore.length > 0 && !messageBefore.endsWith(' ');
+    const newText = messageBefore + (needSpaceBefore ? ' ' : '') + mention + messageAfter;
+
+    messageInput.value = newText;
+
+    const newCursorPos = currentPos + mention.length + (needSpaceBefore ? 1 : 0);
+
+    messageInput.setSelectionRange(newCursorPos, newCursorPos);
+    messageInput.focus();
 }
 
 // ============================================
