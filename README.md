@@ -22,6 +22,7 @@ The project starts small and grows step by step — from a local chat to a deplo
 - ✅ Typing indicators
 - ✅ Emoji picker
 - ✅ Responsive design for mobile and desktop
+- ✅ User Mentions
 
 ## Screenshots
 ![Login page](screenshots/screenshot-2025-11-20_14-32-11.png)
