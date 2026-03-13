@@ -46,14 +46,9 @@ public class WebSocketEventListener {
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = headerAccessor.getSessionId();
-
         if (sessionId != null) {
-            var sessionAttributes = headerAccessor.getSessionAttributes();
-            if (sessionAttributes != null) {
-                userService.removeUser(sessionId);
-                messagingTemplate.convertAndSend("/topic/onlineUsers", userService.getOnlineUsernames());
-            }
-
+            userService.removeUser(sessionId);
+            messagingTemplate.convertAndSend("/topic/onlineUsers", userService.getOnlineUsernames());
         }
     }
 
